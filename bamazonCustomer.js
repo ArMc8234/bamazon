@@ -110,26 +110,23 @@ function inventoryBrowse(){
                     this.qtySelected = answer.quantityRequest;
                     this.cost = this.qtySelected * newChosenItem.price;
                     console.log("Your price will be", this.cost);
-                    console.log("this cost is a ", typeof(this.cost))
-                    updateQty();
-                };
-        
-        });
-    }
+                    console.log("this cost is a ", typeof(this.cost));
+                    this.qtyAvailable -= answer.quantityRequest;
 
-    function updateQty(){
-        newChosenItem.qtyAvailable =- answer.quantityRequest;
-        connection.query("UPDATE products SET ? WHERE ?",
-        [
-            {
-              stock_quantity: newChosenItem.qtyAvailable
-            },
-            {
-              id: chosenItem.id
+                    var query = "UPDATE products SET stock_quantity =" + newChosenItem.qtyAvailable + " WHERE product_name ="+ "'" + newChosenItem.name + "'";
+            connection.query(query, function(err, res)
+                    {
+                if (err) throw err;
+                console.log("Amt. left in stock:", res.stock_quantity );
+                }
+                    // updateQty();
+                // };
+        
+                );
             }
-          ]),
-          function(error) {
-            if (error) throw err;
-            console.log("Amt. left in stock:", stock_quantity );
-        };
-    };
+
+    // function updateQty(){
+        
+        
+            })}
+    //     )}
