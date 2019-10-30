@@ -75,7 +75,7 @@ function inventoryBrowse(){
                     }
                     else {
                        var newChosenItem2 = new ChosenItem(res[i].item_id, res[i].product_name, res[i].stock_quantity, res[i].price);
-                       newChosenItem = newChosenItem2;
+                       newChosenItem = newChosenItem2
                        console.log("new Item: ", newChosenItem);
                         selectQuantity();
                     };
@@ -87,7 +87,7 @@ function inventoryBrowse(){
     );
             
     };
-    // connection.end();
+ 
 
 
     function selectQuantity(){
@@ -107,26 +107,31 @@ function inventoryBrowse(){
                 if (answer.quantityRequest <= newChosenItem.qtyAvailable){
                     this.qtySelected;
                     this.cost;
-                    this.qtySelected = answer.quantityRequest;
+                    this.qtySelected = parseInt(answer.quantityRequest);
                     this.cost = this.qtySelected * newChosenItem.price;
                     console.log("Your price will be", this.cost);
-                    console.log("this cost is a ", typeof(this.cost));
-                    this.qtyAvailable -= answer.quantityRequest;
+                    var newQuantity = newChosenItem.qtyAvailable - this.qtySelected;
+                    var query = "UPDATE products SET stock_quantity =" + newQuantity + " WHERE product_name ="+ "'" + newChosenItem.name + "'";
+                    connection.query(query, function(err, res)
+                        {
+                    if (err) throw err;
+                    
+                    });
 
-                    var query = "UPDATE products SET stock_quantity =" + newChosenItem.qtyAvailable + " WHERE product_name ="+ "'" + newChosenItem.name + "'";
-            connection.query(query, function(err, res)
-                    {
-                if (err) throw err;
-                console.log("Amt. left in stock:", res.stock_quantity );
-                }
-                    // updateQty();
-                // };
-        
-                );
+                var query2 = "Select stock_quantity FROM products Where product_name =" + "'" + newChosenItem.name + "'";
+                connection.query(query2, function(err, res){
+                    for (i = 0; i < res.length; i++){
+                        if (res[i].product_name = newChosenItem.name){
+                            console.log("Amt. left in stock:", res[i].stock_quantity );
+                            connection.end();
+                        }
+                    }
+
+                })
+                
+                
             }
 
-    // function updateQty(){
-        
+       
         
             })}
-    //     )}
